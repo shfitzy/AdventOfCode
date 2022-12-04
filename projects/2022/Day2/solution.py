@@ -2,46 +2,31 @@ import os
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
-def read_lines(filename):
+MOVES = {'A': {'beats': 'C', 'score': 1}, 'B': {'beats': 'A', 'score': 2}, 'C': {'beats': 'B', 'score': 3}}
+
+def read_input_and_transform(filename):
     with open(filename) as f:
         return f.read().splitlines()
 
-def play_games_1(input):
-    score = 0
-    tmp = ord('A') - 1
+def get_result_score(my_move, opponent_move):
+    if MOVES[my_move] == MOVES[opponent_move]: return 3
+    elif MOVES[my_move]['beats'] == opponent_move: return 6
+    else: return 0
 
-    for game in input:
-        opponent_move, my_move = (list(map(lambda x: ord(x[1]) - 23 - tmp if (x[0] == 1) else ord(x[1]) - tmp, enumerate(game.split()))))
-        score += my_move
-        if opponent_move == my_move:
-            score += 3
-        elif (my_move == 1 and opponent_move == 3) or (my_move == 2 and opponent_move == 1) or (my_move == 3 and opponent_move == 2):
-            score += 6
+def get_game_score(my_move, opponent_move):
+    return MOVES[my_move]['score'] + get_result_score(my_move, opponent_move)
 
-    print(score)
+def part_1(line):
+    return chr(ord(line.split()[1]) - ord('X') + ord('A'))
 
-def play_games_2(input):
-    score = 0
-    tmp = ord('A')
+def part_2(line):
+    return chr((ord(line.split()[0]) - ord('A') + ['X', 'Y', 'Z'].index(line.split()[1]) - 1) % 3 + ord('A'))
 
-    for game in input:
-        move_score, result = (list(map(lambda x: x[1] if (x[0] == 1) else ord(x[1]) - tmp, enumerate(game.split()))))
-        if result == 'X':
-            move_score = (move_score - 1) % 3 + 1
-            score += move_score
-            score += 0
-        elif result == 'Y':
-            move_score = move_score % 3 + 1
-            score += move_score
-            score += 3
-        else:
-            move_score = (move_score + 1) % 3 + 1
-            score += move_score
-            score += 6
-
-    print(score)
+def play_games(input, algo=part_1):
+    return sum([get_game_score(algo(line), line.split()[0]) for line in input])
 
 if __name__ == '__main__':
-    input = read_lines(file_path + os.path.sep + 'input.txt')
-    play_games_1(input)
-    play_games_2(input)
+    input = read_input_and_transform(file_path + os.path.sep + 'input.txt')
+    
+    print(play_games(input))
+    print(play_games(input, algo=part_2))

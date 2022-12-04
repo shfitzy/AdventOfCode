@@ -1,28 +1,22 @@
-import os
+import os, string
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
-def read_lines(filename):
+ALPHABET = string.ascii_lowercase + string.ascii_uppercase
+
+# Transforms each row of data into an array containing the "value" for each character within the string
+def read_input_and_transform(filename):
     with open(filename) as f:
-        return f.read().splitlines()
-
-def map_char_to_value(char):
-    char_value = ord(char)
-    if char_value >= ord('a') and char_value <= ord('z'):
-        return char_value - (ord('a') - 1)
-    elif char_value >= ord('A') and char_value <= ord('Z'):
-        return char_value - (ord('A') - 1) + 26
-
-def transform_input(input):
-    return list(map(lambda line: list(map(lambda x: map_char_to_value(x), list(line))), input))
+        return [[(ALPHABET.index(c) + 1) for c in list(line)] for line in f.read().splitlines()]
 
 def calc_overlapping_values(input):
-    print(sum([sum(set.intersection(set(line[:int(len(line) / 2)]), set(line[int(len(line) / 2):]))) for line in input]))
+    return sum([sum(set.intersection(set(line[:(len(line) // 2)]), set(line[(len(line) // 2):]))) for line in input])
 
 def calc_badge_values(input):
-    print(sum([sum(set.intersection(set(input[i]), set(input[i + 1]), set(input[i + 2]))) for i in range(0, len(input), 3)]))
+    return sum([sum(set.intersection(set(input[i]), set(input[i + 1]), set(input[i + 2]))) for i in range(0, len(input), 3)])
 
 if __name__ == '__main__':
-    input = transform_input(read_lines(file_path + os.path.sep + 'input.txt'))
-    calc_overlapping_values(input)
-    calc_badge_values(input)
+    input = read_input_and_transform(file_path + os.path.sep + 'input.txt')
+    
+    print(calc_overlapping_values(input))
+    print(calc_badge_values(input))
