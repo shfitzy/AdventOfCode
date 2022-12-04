@@ -2,19 +2,15 @@ import os
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
-def read_lines(filename):
+def read_input_and_transform(filename):
     with open(filename) as f:
-        return f.read().split('\n\n')
-
-def transform_input(input):
-    return sorted([sum(list(map(lambda i: int(i), row.split('\n')))) for row in input], reverse=True)
+        return sorted([sum(list(map(lambda i: int(i), row.split('\n')))) for row in f.read().split('\n\n')], reverse=True)
 
 def calcTotalCalories(elf_calorie_totals, top=1):
     return sum(elf_calorie_totals[:top])
 
 if __name__ == '__main__':
-    input = read_lines(file_path + os.path.sep + 'input.txt')
-    input = transform_input(input)
+    input = read_input_and_transform(file_path + os.path.sep + 'input.txt')
 
     print(calcTotalCalories(input))
     print(calcTotalCalories(input, 3))
