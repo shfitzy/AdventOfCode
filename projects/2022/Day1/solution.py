@@ -8,11 +8,7 @@ def read_lines(filename):
         return f.read().splitlines()
 
 def transform_input(input):
-    input = list(map(lambda i: int(i) if i != '' else '', input))
-    elf_calorie_totals = [sum(list(g)) for m, g in itertools.groupby(input, key=lambda x: x != '') if m]
-    elf_calorie_totals.sort(reverse=True)
-
-    return elf_calorie_totals
+    return sorted([sum(list(g)) for m, g in itertools.groupby([int(i) if i != '' else '' for i in input], key=lambda x: x != '') if m], reverse=True)
 
 def calcTotalCalories(elf_calorie_totals, top=1):
     return sum(elf_calorie_totals[:top])
