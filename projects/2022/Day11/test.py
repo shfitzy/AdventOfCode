@@ -11,17 +11,17 @@ import solution
 
 from utils import file_util
 
-# class TestSolution(unittest.TestCase):
+class TestSolution(unittest.TestCase):
 
-#     def test_part_one(self):
-#         input = solution.read_input_and_transform(file_path + os.path.sep + 'input.txt')
-#         result = solution.get_tail_locations(input)
-#         self.assertEqual(len(result), 6745)
+    def test_part_one(self):
+        input = file_util.read(file_path + os.path.sep + 'input.txt')
+        monkeys = solution.initialize_monkeys(input)
+        self.assertEqual(solution.play_game(monkeys), 120384)
 
-#     def test_part_two(self):
-#         input = solution.read_input_and_transform(file_path + os.path.sep + 'input.txt')
-#         result = solution.get_tail_locations(input, 10)
-#         self.assertEqual(len(result), 2793)
+    def test_part_two(self):
+        input = file_util.read(file_path + os.path.sep + 'input.txt')
+        monkeys = solution.initialize_monkeys(input)
+        self.assertEqual(solution.play_game(monkeys, 10000, 1), 32059801242)
 
 class TestProvidedExample(unittest.TestCase):
 
@@ -30,10 +30,10 @@ class TestProvidedExample(unittest.TestCase):
         monkeys = solution.initialize_monkeys(input)
         self.assertEqual(solution.play_game(monkeys), 10605)
     
-    # def test_puzzle_two_with_example(self):
-    #     input = file_util.read_lines(file_path + os.path.sep + 'test_input_1.txt')
-    #     signal_data = solution.generate_signal_data(input)
-    #     solution.print_pixels(signal_data)
+    def test_puzzle_two_with_example(self):
+        input = file_util.read(file_path + os.path.sep + 'test_input_1.txt')
+        monkeys = solution.initialize_monkeys(input)
+        self.assertEqual(solution.play_game(monkeys, 10000, 1), 2713310158)
 
 if __name__ == '__main__':
     unittest.main()

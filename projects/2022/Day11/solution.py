@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pat
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
-from utils import file_util
+from utils import file_util, operator_util
 
 
 
@@ -18,14 +18,7 @@ class Monkey:
         self.success = success
         self.failure = failure
         self.inspections = 0
-
-        if operator == '+':
-            self.operation = lambda x: x + int(value)
-        elif operator == '*':
-            if value == 'old':
-                self.operation = lambda x: x * x
-            else:
-                self.operation = lambda x: x * int(value)
+        self.operation = lambda x: operator_util.OPERATORS[operator](x, value if value.isnumeric() else x)
 
 
 
@@ -44,29 +37,26 @@ def initialize_monkeys(input):
 
     return monkeys
 
+def worry_mod_alg(i, monkey, lcm, worry_reduction):
+    i = monkey.operation(i)
+    if worry_reduction > 1:
+        return i // worry_reduction
+    else:
+        return i % lcm
+
 def play_game(monkeys, num_rounds=20, worry_reduction=3):
     lcm = np.lcm.reduce([monkey.test_num for monkey in monkeys])
     for round in range(num_rounds):
         for monkey in monkeys:
             monkey.inspections += len(monkey.items)
-            monkey.items = [i % lcm for i in monkey.items]
-            for item in monkey.items:
-                item = monkey.operation(item)
-                item //= worry_reduction
-                # item = item % lcm
-                if item % monkey.test_num == 0:
-                    monkeys[monkey.success].items.append(item)
-                else:
-                    monkeys[monkey.failure].items.append(item)
+            monkey.items = [worry_mod_alg(i, monkey, lcm, worry_reduction) for i in monkey.items]
+            [monkeys[monkey.success if i % monkey.test_num == 0 else monkey.failure].items.append(i) for i in monkey.items]
             monkey.items = []
     
     sorted_values = sorted([m.inspections for m in monkeys], reverse=True)
-    print(sorted_values)
     return sorted_values[0] * sorted_values[1]
 
 if __name__ == '__main__':
     input = file_util.read(file_path + os.path.sep + 'input.txt')
-    monkeys = initialize_monkeys(input)
-    print(play_game(monkeys))
-    # monkeys = initialize_monkeys(input)
-    # print(play_game(monkeys, 10000, 1))
+    print(play_game(initialize_monkeys(input)))
+    print(play_game(initialize_monkeys(input), 10000, 1))
