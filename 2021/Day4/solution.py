@@ -69,5 +69,4 @@ def play_game(numbers, boards):
 
 if __name__ == '__main__':
     input = read_lines(file_path + os.path.sep + 'input.txt')
-    numbers, boards = transform_input(input)
     play_game(*transform_input(input))
