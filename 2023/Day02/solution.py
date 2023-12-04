@@ -1,3 +1,4 @@
+import math
 import os
 import sys
 
@@ -22,24 +23,22 @@ def get_min_cubes_for_game(game):
 
     return red, green, blue
 
+def passes_check(line):
+    red, green, blue = get_min_cubes_for_game(line)
+    return red <= 12 and green <= 13 and blue <= 14
+
 def solution_1(data):
-    sum = 0
-
-    for line in data:
-        red, green, blue = get_min_cubes_for_game(line)
-        if red <= 12 and green <= 13 and blue <= 14:
-            sum +=int(line[0].split(" ")[1])
-
-    print(sum)
+    print(sum([int(line[0].split(" ")[1]) for line in data if passes_check(line)]))
 
 def solution_2(data):
-    power = 0
+    print(sum([math.prod(get_min_cubes_for_game(line)) for line in data]))
+    # power = 0
 
-    for line in data:
-        red, green, blue = get_min_cubes_for_game(line)
-        power += red * green * blue
+    # for line in data:
+    #     red, green, blue = get_min_cubes_for_game(line)
+    #     power += red * green * blue
 
-    print(power)
+    # print(power)
 
 if __name__ == '__main__':
     data = file_util.read_file(file_path, 'input.txt', split=True, split_str=":")
