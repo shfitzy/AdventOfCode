@@ -7,7 +7,7 @@ sys.path.append(os.path.join(file_path, os.path.pardir, os.path.pardir))
 
 from utils import file_util
 
-def get_min_cube_reqs(game):
+def get_min_cubes_for_game(game):
     red, green, blue = 0, 0, 0
     for game in game[1].split(";"):
         for cubes in game.split(","):
@@ -26,7 +26,7 @@ def solution_1(data):
     sum = 0
 
     for line in data:
-        red, green, blue = get_min_cube_reqs(line)
+        red, green, blue = get_min_cubes_for_game(line)
         if red <= 12 and green <= 13 and blue <= 14:
             sum +=int(line[0].split(" ")[1])
 
@@ -36,7 +36,7 @@ def solution_2(data):
     power = 0
 
     for line in data:
-        red, green, blue = get_min_cube_reqs(line)
+        red, green, blue = get_min_cubes_for_game(line)
         power += red * green * blue
 
     print(power)
