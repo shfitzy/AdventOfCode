@@ -32,13 +32,6 @@ def solution_1(data):
 
 def solution_2(data):
     print(sum([math.prod(get_min_cubes_for_game(line)) for line in data]))
-    # power = 0
-
-    # for line in data:
-    #     red, green, blue = get_min_cubes_for_game(line)
-    #     power += red * green * blue
-
-    # print(power)
 
 if __name__ == '__main__':
     data = file_util.read_file(file_path, 'input.txt', split=True, split_str=":")
