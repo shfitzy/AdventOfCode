@@ -27,7 +27,7 @@ def get_winning_permutations_bisect(duration, target):
 def get_winning_permutations_quadratic_formula(duration, target):
     a, b, c = -1, duration, (-1) * target
     quadratic_formula_result =  math.floor(((-1)*b + math.sqrt(b**2 - 4*a*c)) / (2*a))
-    
+
     return (duration - 1) - (2 * quadratic_formula_result)
 
 def solution_1(data):
@@ -37,7 +37,7 @@ def solution_2(data):
     return get_winning_permutations_quadratic_formula(int(''.join(data[0][1:])), int(''.join(data[1][1:])))
 
 if __name__ == '__main__':
-    data = file_util.read_file(file_path, 'test_input.txt', split=True, regex_split=True, split_str='\s+')
+    data = file_util.read_file(file_path, 'input.txt', split=True, regex_split=True, split_str='\s+')
 
     print(solution_1(data))
     print(solution_2(data))
