@@ -89,8 +89,5 @@ def solution_2(instructions, mappings):
 if __name__ == '__main__':
     data = file_util.read_file(file_path, 'input.txt')
 
-    instructions = data[0]
-    mappings = data[2:]
-
-    print(solution_1(instructions, mappings))
-    print(solution_2(instructions, mappings))
+    print(solution_1(data[0], data[2:]))
+    print(solution_2(data[0], data[2:]))
