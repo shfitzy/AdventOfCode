@@ -19,6 +19,10 @@ def read_file(filepath, filename='input.txt', trim=True, split=False, regex_spli
 def get_int_array(filepath, filename='input.txt'):
     data = read_file(filepath, filename)
     return list(map(lambda i: int(i), data))
+     
+def get_2d_int_array(filepath, filename='input.txt'):
+    with open(filepath + os.path.sep + filename) as f:
+        return [[int(i) for i in line.split()] for line in f.readlines()]
         
 
 def read(filepath, filename='input.txt', split=False, regex_split=False, split_str=' '):
