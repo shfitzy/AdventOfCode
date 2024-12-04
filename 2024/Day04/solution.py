@@ -49,9 +49,6 @@ def x_mas(data):
 
 if __name__ == '__main__':
     data = [[c for c in line] for line in file_util.read_file(file_path, 'input.txt')]
-    data2 = defaultdict(list)
-    print(data2)
 
     print(xmas(data))
     print(x_mas(data))
-    print(x_mas_2(data))
