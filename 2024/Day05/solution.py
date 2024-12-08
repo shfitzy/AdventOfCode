@@ -1,42 +1,9 @@
+from collections import Counter
 import os
 import sys
 
-file_path = os.path.dirname(os.path.realpath(__file__))
-
-sys.path.append(os.path.join(file_path, os.path.pardir, os.path.pardir))
-
-from utils import file_util
-
 if __name__ == '__main__':
-    rules, updates = file_util.read(file_path, 'input.txt').split("\n\n")
+    input = file_util.read(file_path, 'test_input.txt').split("\n\n")
 
-    rule_map = {}
-    # for rule in rules:
-
-    correct_sum = 0
-    incorrect_sum = 0
-
-    for update in updates.split():
-        update = [int(i) for i in update.split(",")]
-        update_set = set(update)
-        valid = True
-        is_error = True
-
-        while is_error:
-            is_error = False
-            for rule in rules.split():
-                num_1, num_2 = [int(i) for i in rule.split("|")]
-                if {num_1, num_2}.issubset(update_set):
-                    index_1, index_2 = update.index(num_1), update.index(num_2)
-                    if index_1 > index_2:
-                        update[index_1] = num_2
-                        update[index_2] = num_1
-                        valid = False
-                        is_error = True
-
-
-        if(valid): correct_sum += update[int((len(update) - 1) / 2)]
-        else: incorrect_sum += update[int((len(update) - 1) / 2)]
-
-    print(correct_sum)
-    print(incorrect_sum)
+    page_order = [page for page, _ in Counter([item for sublist in [[r.split("|")[0], r.split("|")[0], r.split("|")[1]] for r in input[0].split()] for item in sublist]).most_common()]
+    print(*[sum(int([i for i in page_order if i in update][int((len([i for i in page_order if i in update]) - 1) / 2)]) for update in [[_ for _ in update.split(",")] for update in input[1].split()] if ([i for i in page_order if i in update] == update) == b) for b in [True, False]], sep='\n')
