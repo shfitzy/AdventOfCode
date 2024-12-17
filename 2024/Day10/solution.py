@@ -1,5 +1,3 @@
-from itertools import groupby
-
 import os
 import sys
 
