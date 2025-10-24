@@ -53,11 +53,17 @@ def get_next_output(registers, program, ptr):
             ptr += 2
 
         if instr == 0:
+            print("[Instr 0] Updating register A: " + str(registers[0]) + " -> ", end='')
             registers[0] = registers[0] // (2 ** get_combo_operand(operand, registers))
+            print(registers[0])
         elif instr == 1:
+            print("[Instr 1] Updating register B: " + str(registers[1]) + " -> ", end='')
             registers[1] = registers[1] ^ operand
+            print(registers[1])
         elif instr == 2:
+            print("[Instr 2] Updating register B: " + str(registers[1]) + " -> ", end='')
             registers[1] = get_combo_operand(operand, registers) % 8
+            print(registers[1])
         elif instr == 3:
             if registers[0] != 0:
                 ptr = operand
@@ -67,36 +73,60 @@ def get_next_output(registers, program, ptr):
         elif instr == 5:
             return [get_combo_operand(operand, registers) % 8, registers, ptr]
         elif instr == 6:
+            print("[Instr 6] Updating register B: " + str(registers[1]) + " -> ", end='')
             registers[1] = registers[0] // (2 ** get_combo_operand(operand, registers))
+            print(registers[1])
         elif instr == 7:
+            print("[Instr 7] Updating register C: " + str(registers[2]) + " -> ", end='')
             registers[2] = registers[0] // (2 ** get_combo_operand(operand, registers))
+            print(registers[2])
 
-    return [None, None, None]
+    return None
 
-def fix_program(registers, program):
+def fix_program(program):
     reverse_output = program[::-1]
     
-    ptr = 0
+    output_idx = 0
+    start_at = 0
     a_reg = 0
-    for output in reverse_output:
-        a_reg *= 8
 
-        for i in range(0, 8):
-            print('Testing: ' + str(i))
-            result = get_next_output([a_reg, registers[1], registers[2]], program, ptr)
+    while True:
+        found_output = False
 
-            if not result: continue
-            elif result[0] == output:
-                print('Found output: ' + str(result[0]))
-                registers = result[1]
-                ptr = result[2]
+        for i in range(start_at, 8):
+            tmp_a_reg = a_reg * 8 + i
+            b_reg = tmp_a_reg % 8
+            b_reg = b_reg ^ 1
+            c_reg = tmp_a_reg // pow(2, b_reg)
+            b_reg = (b_reg ^ c_reg) % 8
+            b_reg = b_reg ^ 4
 
-    return a_reg
+            if b_reg == reverse_output[output_idx]:
+                # print('Found output: ' + str(i))
+                a_reg = a_reg * 8 + i
+
+                if output_idx == len(reverse_output) - 1:
+                    return a_reg
+                else:
+                    found_output = True
+                    output_idx += 1
+                    start_at = 0
+                    break
+
+        if not found_output: # If we didn't find a valid output for the current output index, we need to backtrack
+            if output_idx == 0: # If we haven't found any output for the first output in the reverse list, then there is no solution
+                # print('No solution found')
+                return -1
+            else: # Backtrack to the previous output and try the next possible value for that output
+                # print('No output found for: ' + str(reverse_output[output_idx]))
+                start_at = (a_reg % 8) + 1
+                a_reg //= 8
+                output_idx -= 1
 
 if __name__ == '__main__':
-    registers, program = file_util.read(file_path, 'test_input.txt').split('\n\n')
+    registers, program = file_util.read(file_path, 'input.txt').split('\n\n')
     registers = [int(line.split(': ')[1]) for line in registers.split('\n')]
     program = [int(i) for i in program.split(': ')[1].split(',')]
 
     print(get_program_result(registers, program))
-    print(fix_program(registers, program))
+    print(fix_program(program))
