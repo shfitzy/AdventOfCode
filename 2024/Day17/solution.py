@@ -44,84 +44,22 @@ def get_program_result(registers, program):
 
     return ','.join([str(i) for i in output])
 
-def get_next_output(registers, program, ptr):
-    while ptr < len(program) - 1:
-        instr = program[ptr]
-        operand = program[ptr + 1]
-
-        if instr != 3 or registers[0] == 0:
-            ptr += 2
-
-        if instr == 0:
-            print("[Instr 0] Updating register A: " + str(registers[0]) + " -> ", end='')
-            registers[0] = registers[0] // (2 ** get_combo_operand(operand, registers))
-            print(registers[0])
-        elif instr == 1:
-            print("[Instr 1] Updating register B: " + str(registers[1]) + " -> ", end='')
-            registers[1] = registers[1] ^ operand
-            print(registers[1])
-        elif instr == 2:
-            print("[Instr 2] Updating register B: " + str(registers[1]) + " -> ", end='')
-            registers[1] = get_combo_operand(operand, registers) % 8
-            print(registers[1])
-        elif instr == 3:
-            if registers[0] != 0:
-                ptr = operand
-                continue
-        elif instr == 4:
-            registers[1] = registers[1] ^ registers[2]
-        elif instr == 5:
-            return [get_combo_operand(operand, registers) % 8, registers, ptr]
-        elif instr == 6:
-            print("[Instr 6] Updating register B: " + str(registers[1]) + " -> ", end='')
-            registers[1] = registers[0] // (2 ** get_combo_operand(operand, registers))
-            print(registers[1])
-        elif instr == 7:
-            print("[Instr 7] Updating register C: " + str(registers[2]) + " -> ", end='')
-            registers[2] = registers[0] // (2 ** get_combo_operand(operand, registers))
-            print(registers[2])
-
-    return None
-
 def fix_program(program):
-    reverse_output = program[::-1]
-    
-    output_idx = 0
-    start_at = 0
-    a_reg = 0
+    test_values = [[i] for i in range(8)]
+    mappings = {}
 
-    while True:
-        found_output = False
+    while len(test_values) > 0:
+        test_value = test_values.pop(0)
+        a_reg = sum([i * pow(8, idx) for idx, i in enumerate(reversed(test_value))])
 
-        for i in range(start_at, 8):
-            tmp_a_reg = a_reg * 8 + i
-            b_reg = tmp_a_reg % 8
-            b_reg = b_reg ^ 1
-            c_reg = tmp_a_reg // pow(2, b_reg)
-            b_reg = (b_reg ^ c_reg) % 8
-            b_reg = b_reg ^ 4
+        partial_solution_candidate = [int(i) for i in get_program_result([a_reg, 0, 0], program).split(',')]
+        mappings[tuple(test_value)] = partial_solution_candidate
 
-            if b_reg == reverse_output[output_idx]:
-                # print('Found output: ' + str(i))
-                a_reg = a_reg * 8 + i
-
-                if output_idx == len(reverse_output) - 1:
-                    return a_reg
-                else:
-                    found_output = True
-                    output_idx += 1
-                    start_at = 0
-                    break
-
-        if not found_output: # If we didn't find a valid output for the current output index, we need to backtrack
-            if output_idx == 0: # If we haven't found any output for the first output in the reverse list, then there is no solution
-                # print('No solution found')
-                return -1
-            else: # Backtrack to the previous output and try the next possible value for that output
-                # print('No output found for: ' + str(reverse_output[output_idx]))
-                start_at = (a_reg % 8) + 1
-                a_reg //= 8
-                output_idx -= 1
+        if program == partial_solution_candidate:
+            return a_reg
+        elif program[len(program)-len(partial_solution_candidate):] == partial_solution_candidate:
+            if len(test_value) <= 1 or mappings[tuple(test_value[:len(test_value)-1])] != partial_solution_candidate:
+                [test_values.insert(0, test_value + [i]) for i in reversed(range(8))]
 
 if __name__ == '__main__':
     registers, program = file_util.read(file_path, 'input.txt').split('\n\n')
