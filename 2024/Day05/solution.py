@@ -10,9 +10,6 @@ from utils import file_util
 if __name__ == '__main__':
     rules, updates = file_util.read(file_path, 'input.txt').split("\n\n")
 
-    rule_map = {}
-    # for rule in rules:
-
     correct_sum = 0
     incorrect_sum = 0
 
