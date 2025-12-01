@@ -70,31 +70,16 @@ class Node:
         return self.value != '#'
     
 def calc_shortcuts(graph, cheat_duration, time_save_limit):
-    # shortcut_mappings = defaultdict(int)
-
-    # for node in [node for _, node in graph.nodes.items() if node.dist is not None]:
-    #     for neighbor in [neighbor for neighbor in node.get_neighbors() if not neighbor.is_traversable()]:
-    #         target_node_pos = (2 * (neighbor.pos[0] - node.pos[0]) + node.pos[0], 2 * (neighbor.pos[1] - node.pos[1]) + node.pos[1])
-    #         target_node = graph.nodes.get(target_node_pos)
-    #         if target_node and target_node.dist is not None and target_node.dist > node.dist + 2:
-    #             shortcut_mappings[target_node.dist - (node.dist + 2)] += 1
-
     num_valid_shortcuts = 0
+
     keys = sorted([node for _, node in graph.nodes.items() if node.dist is not None], key=lambda n: n.dist)
     for start_node in keys[:-time_save_limit]:
         for end_node in keys[start_node.dist + time_save_limit:]:
             manhattan_distance = abs(start_node.pos[0] - end_node.pos[0]) + abs(start_node.pos[1] - end_node.pos[1])
             if manhattan_distance <= cheat_duration and end_node.dist - start_node.dist - manhattan_distance >= time_save_limit:
                 num_valid_shortcuts += 1
+                
     return num_valid_shortcuts
-    # for node in [node for _, node in graph.nodes.items() if node.dist is not None]:
-    #     for neighbor in [neighbor for neighbor in node.get_neighbors() if not neighbor.is_traversable()]:
-    #         target_node_pos = (2 * (neighbor.pos[0] - node.pos[0]) + node.pos[0], 2 * (neighbor.pos[1] - node.pos[1]) + node.pos[1])
-    #         target_node = graph.nodes.get(target_node_pos)
-    #         if target_node and target_node.dist is not None and target_node.dist > node.dist + 2:
-    #             shortcut_mappings[target_node.dist - (node.dist + 2)] += 1
-
-    # return sum([v for k, v in shortcut_mappings.items() if k >= time_save_limit])
 
 if __name__ == '__main__':
     test_mode = False
