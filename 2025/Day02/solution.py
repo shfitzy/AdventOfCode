@@ -56,7 +56,7 @@ def repeated_id_algorithmic_check(id_ranges, allowed_factors):
     return sum(invalid_values)
         
 if __name__ == '__main__':
-    id_ranges = file_util.read(file_path, 'test_input_2.txt').split(',')
+    id_ranges = file_util.read(file_path, 'input.txt').split(',')
 
     timer(repeated_id_regex_check, 'Part 1 - Regex Check', id_ranges, r'^(.+)\1{1}$')
     timer(repeated_id_regex_check, 'Part 2 - Regex Check', id_ranges, r'^(.+)\1{1,}$')
