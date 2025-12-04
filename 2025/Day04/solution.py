@@ -34,15 +34,16 @@ class Graph:
         output = ''
         for y in range(self.height):
             for x in range(self.width):
-                # output += self.nodes[(x, y)].value
-                output += str(len(self.nodes[(x, y)].tp_neighbors))
+                output += self.nodes[(x, y)].value
             output += '\n'
         return output
     
     def remove_tp(self, node):
         if node in self.tp_nodes and node.value == '@':
             self.tp_nodes.remove(node)
-            node.remove_tp()
+            node.value = '.'
+            for neighbor in node.neighbors:
+                neighbor.tp_neighbors -= 1
 
 class Node:
 
@@ -50,38 +51,33 @@ class Node:
         self.pos = (x, y)
         self.value = value
         self.neighbors = []
-        self.tp_neighbors = []
+        self.tp_neighbors = 0
 
     def add_neighbor(self, other_node, is_tp):
         self.neighbors.append(other_node)
         other_node.neighbors.append(self)
         if other_node.value == '@':
-            self.tp_neighbors.append(other_node)
+            self.tp_neighbors += 1
         if is_tp:
-            other_node.tp_neighbors.append(self)
+            other_node.tp_neighbors += 1
 
-    def remove_tp(self):
-        self.value = '.'
-        for tp_neighbor in self.tp_neighbors:
-            tp_neighbor.tp_neighbors.remove(self)
-        self.tp_neighbors = []
+def solve_part_1(input):
+    return len([node for node in Graph(input).tp_nodes if node.tp_neighbors < 4])
 
-def get_num_accessible_tp(graph, recurse, tp_accessible=0):
-    accessible_nodes = [node for node in graph.tp_nodes if len(node.tp_neighbors) < 4]
-    tp_accessible += len(accessible_nodes)
+def solve_part_2(input):
+    graph = Graph(input)
+    result = 0
 
-    for node in accessible_nodes: graph.remove_tp(node)
-
-    if len(accessible_nodes) != 0 and recurse:
-        return get_num_accessible_tp(graph, recurse, tp_accessible)
-    else:
-        return tp_accessible
-
-def solve(input, recurse=False):
-    return get_num_accessible_tp(Graph(input), recurse)
+    while True:
+        accessible_nodes = [node for node in graph.tp_nodes if node.tp_neighbors < 4]
+        if len(accessible_nodes) == 0:
+            return result
+        else:
+            result += len(accessible_nodes)
+            [graph.remove_tp(node) for node in accessible_nodes]
 
 if __name__ == '__main__':
     input = file_util.read(file_path, 'input.txt').split('\n')
 
-    timer(solve, 'Part 1', 10, input)
-    timer(solve, 'Part 2', 10, input, True)
+    timer(solve_part_1, 'Part 1', 10, input)
+    timer(solve_part_2, 'Part 2', 10, input)
