@@ -36,5 +36,5 @@ def calc_max_voltage(battery_banks, num_batteries):
 if __name__ == '__main__':
     input = file_util.read(file_path, 'input.txt').split('\n')
 
-    timer(calc_max_voltage, 'Part 1', input, 2)
-    timer(calc_max_voltage, 'Part 2', input, 12)
+    timer(calc_max_voltage, 'Part 1', 10, input, 2)
+    timer(calc_max_voltage, 'Part 2', 10, input, 12)
