@@ -76,8 +76,41 @@ def solve_part_2(input):
             result += len(accessible_nodes)
             [graph.remove_tp(node) for node in accessible_nodes]
 
+def solve_with_sets(input, recurse=False):
+    tp_coords, width, height = set(), len(input[0]), len(input)
+
+    for y in range(height):
+        for x in range(width):
+            if input[y][x] == '@': tp_coords.add((x, y))
+
+    accessible_tp_coords = set()
+    accessible_tp = 0
+
+    while True:
+        for tp in tp_coords:
+            tp_neighbors = 0
+            for n in [(-1, -1),(-1, 0),(-1, 1),(0, -1),(0, 1),(1, -1),(1, 0),(1, 1)]:
+                new_x, new_y = tp[0] + n[0], tp[1] + n[1]
+                if new_x >= 0 and new_x < width and new_y >= 0 and new_y < height and (new_x, new_y) in tp_coords:
+                    tp_neighbors += 1
+
+            if tp_neighbors < 4:
+                accessible_tp_coords.add(tp)
+
+        accessible_tp += len(accessible_tp_coords)
+        if not recurse or len(accessible_tp_coords) == 0:
+            return accessible_tp
+        else:
+            tp_coords = tp_coords - accessible_tp_coords
+            accessible_tp_coords.clear()
+        
+
+        
+
 if __name__ == '__main__':
     input = file_util.read(file_path, 'input.txt').split('\n')
 
-    timer(solve_part_1, 'Part 1', 10, input)
-    timer(solve_part_2, 'Part 2', 10, input)
+    timer(solve_part_1, 'Part 1 (with graph)', 10, input)
+    timer(solve_part_2, 'Part 2 (with graph)', 10, input)
+    timer(solve_with_sets, 'Part 1 (with sets)', 10, input)
+    timer(solve_with_sets, 'Part 2 (with sets)', 10, input, True)
