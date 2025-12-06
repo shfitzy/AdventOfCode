@@ -24,7 +24,7 @@ def timer(func, name, n, *args, **kwargs):
 
             times.append(end_time - start_time)
 
-        print(f"{name}: {result}\n     Avg: {(statistics.mean(times)*1000):.2f}ms\n  Median: {statistics.median(times)*1000:.2f}ms\n     Min: {min(times)*1000:.2f}ms\n     Max: {max(times)*1000:.2f}ms\n")
+        print(f"{name}: {result}\n     Avg: {(statistics.mean(times)*1000):.2f} ms\n  Median: {statistics.median(times)*1000:.2f} ms\n     Min: {min(times)*1000:.2f} ms\n     Max: {max(times)*1000:.2f} ms\n")
         return result
     
     # If arguments were provided, call the function immediately

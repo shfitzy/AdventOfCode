@@ -58,7 +58,7 @@ def repeated_id_algorithmic_check(id_ranges, allowed_factors):
 if __name__ == '__main__':
     id_ranges = file_util.read(file_path, 'input.txt').split(',')
 
-    timer(repeated_id_regex_check, 'Part 1 - Regex Check', id_ranges, r'^(.+)\1{1}$')
-    timer(repeated_id_regex_check, 'Part 2 - Regex Check', id_ranges, r'^(.+)\1{1,}$')
-    timer(repeated_id_algorithmic_check, 'Part 1 - Algorithmic Check', id_ranges, {2})
-    timer(repeated_id_algorithmic_check, 'Part 2 - Algorithmic Check', id_ranges, None)
+    timer(repeated_id_regex_check, 'Part 1 - Regex Check', 10, id_ranges, r'^(.+)\1{1}$')
+    timer(repeated_id_regex_check, 'Part 2 - Regex Check', 10, id_ranges, r'^(.+)\1{1,}$')
+    timer(repeated_id_algorithmic_check, 'Part 1 - Algorithmic Check', 10, id_ranges, {2})
+    timer(repeated_id_algorithmic_check, 'Part 2 - Algorithmic Check', 10, id_ranges, None)
